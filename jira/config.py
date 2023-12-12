@@ -23,6 +23,7 @@ def get_jira(
     appid=None,
     autofix=False,
     verify: bool | str = True,
+    api_version: "2",
 ):
     """Return a JIRA object by loading the connection details from the `config.ini` file.
 
@@ -35,6 +36,7 @@ def get_jira(
         autofix: autofix
         verify (Union[bool, str]): True to indicate whether SSL certificates should be verified or
             str path to a CA_BUNDLE file or directory with certificates of trusted CAs. (Default: ``True``)
+        api_version (str): Jira server api version
 
     Returns:
         JIRA: an instance to a JIRA object.
@@ -87,6 +89,7 @@ def get_jira(
             "appid": appid,
             "autofix": autofix,
             "verify": verify,
+            "api_version": api_version
         },
         allow_no_value=True,
     )
@@ -111,6 +114,8 @@ def get_jira(
             password = config.get(profile, "pass")
             appid = config.get(profile, "appid")
             autofix = config.get(profile, "autofix")
+            api_version = config.get(profile, "api_version")
+            
             try:
                 verify = config.getboolean(profile, "verify")
             except ValueError:
@@ -126,6 +131,7 @@ def get_jira(
     options["autofix"] = autofix
     options["appid"] = appid
     options["verify"] = verify
+    options["rest_api_version"] = api_version
 
     return JIRA(options=options, basic_auth=(username, password))
     # self.jira.config.debug = debug
